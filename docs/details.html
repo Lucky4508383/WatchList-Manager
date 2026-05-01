@@ -1202,12 +1202,12 @@
             }
         }
 
-        window.toggleFavoriteRelated = async function(tmdbId, mediaType, title, image, yearStr, btnElement) {
+        window.toggleFavoriteRelated = async function (tmdbId, mediaType, title, image, yearStr, btnElement) {
             if (!currentUser) {
                 window.location.href = "login.html";
                 return;
             }
-            
+
             const itemYear = yearStr !== 'N/A' ? yearStr : null;
             const existingIndex = windowUserFavorites.findIndex(f => f.title === title && f.year == itemYear);
 
@@ -1236,6 +1236,65 @@
             }
         }
     </script>
+</body>
+
+</html> title,
+platform,
+status,
+image,
+year: itemYear
+};
+
+windowUserWatchlist.push(mediaObj);
+
+try {
+await setDoc(doc(db, "users", currentUser.uid), { watchlist: windowUserWatchlist }, { merge: true });
+btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 6L9 17l-5-5"></path>
+</svg> Added`;
+setTimeout(() => updateWatchlistUI(), 1500);
+} catch (e) {
+console.error("Error saving to Firestore", e);
+}
+};
+}
+}
+
+window.toggleFavoriteRelated = async function (tmdbId, mediaType, title, image, yearStr, btnElement) {
+if (!currentUser) {
+window.location.href = "login.html";
+return;
+}
+
+const itemYear = yearStr !== 'N/A' ? yearStr : null;
+const existingIndex = windowUserFavorites.findIndex(f => f.title === title && f.year == itemYear);
+
+if (existingIndex > -1) {
+// Remove
+windowUserFavorites.splice(existingIndex, 1);
+btnElement.classList.remove('active');
+} else {
+// Add
+const favObj = {
+id: Date.now(),
+tmdbId,
+mediaType,
+title,
+image,
+year: itemYear
+};
+windowUserFavorites.push(favObj);
+btnElement.classList.add('active');
+}
+
+try {
+await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites }, { merge: true });
+} catch (e) {
+console.error("Error toggling favorite", e);
+}
+}
+</script>
 </body>
 
 </html>
