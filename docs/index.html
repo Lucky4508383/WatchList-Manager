@@ -701,9 +701,9 @@
                             
                             const providers = vpData.results && (vpData.results.IN || vpData.results.US);
                             if (providers && providers.flatrate) {
-                                networkStr = providers.flatrate.map(p => p.provider_name).join(', ');
+                                networkStr = providers.flatrate.filter(p => !p.provider_name.toLowerCase().includes("crunchyroll amazon")).map(p => p.provider_name).join(', ');
                             } else if (providers && providers.free) {
-                                networkStr = providers.free.map(p => p.provider_name).join(', ');
+                                networkStr = providers.free.filter(p => !p.provider_name.toLowerCase().includes("crunchyroll amazon")).map(p => p.provider_name).join(', ');
                             }
                         } catch(e) {
                             console.error("Error fetching providers for " + item.id, e);
