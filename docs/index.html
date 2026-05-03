@@ -688,7 +688,7 @@
                         (item.media_type === 'movie' || item.media_type === 'tv') && item.poster_path
                     );
 
-                    validResults.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+
                     validResults = validResults.slice(0, 24);
 
                     combinedResults = await Promise.all(validResults.map(async item => {
