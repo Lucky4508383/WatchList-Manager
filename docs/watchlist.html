@@ -206,6 +206,32 @@
             letter-spacing: -1px;
         }
 
+        .export-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: inherit;
+        }
+
+        .export-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .export-btn:active {
+            transform: translateY(1px);
+        }
+
         /* Stats Chart Container */
         .stats-container {
             background: rgba(20, 20, 25, 0.9);
@@ -710,7 +736,17 @@
 
     <div class="container">
         <div class="header-section">
-            <h2 class="page-header">My Dashboard</h2>
+            <div style="display: flex; flex-direction: column; gap: 15px; align-items: flex-start;">
+                <h2 class="page-header">My Dashboard</h2>
+                <button id="exportDataBtn" class="export-btn" onclick="window.exportUserData()" title="Download your watchlist and favorites data">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Export Data
+                </button>
+            </div>
             <div class="stats-container">
                 <div class="stats-title">Progress Overview</div>
                 <div class="chart-wrapper">
@@ -1362,6 +1398,38 @@
             });
             loadData();
         }
+
+        window.exportUserData = function() {
+            if (!currentUser) return;
+            
+            const cleanWatchlist = windowUserWatchlist.map(item => ({
+                title: item.title,
+                type: item.mediaType === 'movie' ? 'Movie' : 'Series',
+                year: item.year,
+                platform: item.platform,
+                status: item.status
+            }));
+
+            const cleanFavorites = windowUserFavorites.map(item => ({
+                title: item.title,
+                type: item.mediaType === 'movie' ? 'Movie' : 'Series',
+                year: item.year
+            }));
+            
+            const dataToExport = {
+                exportDate: new Date().toISOString().split('T')[0],
+                watchlist: cleanWatchlist,
+                favorites: cleanFavorites
+            };
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataToExport, null, 2));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "watchlist_export_" + new Date().toISOString().split('T')[0] + ".json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        };
     </script>
 
 </body>
