@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History - Universal Watchlist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f0ff;
+            --primary-hover: #00c3ff;
+            --primary-glow: rgba(0, 240, 255, 0.6);
+            --bg-body: #05050a;
+            --bg-glass: rgba(10, 10, 15, 0.8);
+            --bg-glass-hover: rgba(15, 15, 25, 0.9);
+            --border-glass: rgba(0, 240, 255, 0.2);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(9, 9, 11, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 0 40px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand::before {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background-color: var(--primary);
+            border-radius: 6px;
+            mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 22h20L12 2z"/></svg>') center/contain no-repeat;
+            -webkit-mask: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3L1 21h22L12 3z"/></svg>') center/contain no-repeat;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -24px;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: white;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 50px 20px;
+        }
+
+        .page-header {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .history-card {
+            display: flex;
+            align-items: center;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid var(--border-glass);
+            border-radius: 4px;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+            gap: 20px;
+        }
+
+        .history-card:hover {
+            background: rgba(30, 30, 35, 0.8);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .history-image-wrapper {
+            width: 60px;
+            height: 90px;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background-color: #111;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .history-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .history-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .history-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .action-badge {
+            display: inline-block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 2px;
+            letter-spacing: 0.5px;
+            width: fit-content;
+        }
+
+        .action-add-watchlist {
+            color: #3b82f6;
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .action-rem-watchlist {
+            color: #94a3b8;
+            background: rgba(148, 163, 184, 0.15);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .action-add-fav {
+            color: #ec4899;
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+        }
+
+        .action-rem-fav {
+            color: #94a3b8;
+            background: rgba(148, 163, 184, 0.15);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .action-status {
+            color: #eab308;
+            background: rgba(234, 179, 8, 0.15);
+            border: 1px solid rgba(234, 179, 8, 0.3);
+        }
+
+        .clear-btn {
+            background: rgba(255, 0, 60, 0.1);
+            color: #ff003c;
+            border: 1px solid rgba(255, 0, 60, 0.4);
+            padding: 10px 16px;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 400;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 77, 79, 0.25);
+            border-color: #ff4d4f;
+            transform: translateY(-1px);
+        }
+
+        .clear-btn:active {
+            transform: translateY(1px);
+        }
+
+        .history-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            min-width: 120px;
+        }
+
+        .history-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+
+        .history-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--primary);
+            font-size: 1.25rem;
+            background: rgba(10, 10, 15, 0.9);
+            border-radius: 4px;
+            border: 1px solid var(--border-glass);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 400;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .empty-state::before {
+            content: '[_]';
+            font-size: 3rem;
+            opacity: 0.8;
+            color: var(--primary);
+            display: block;
+        }
+
+        .loader-full {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-body);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s infinite linear;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 0 20px;
+                height: 60px;
+            }
+            .nav-links {
+                display: none;
+            }
+            .history-card {
+                flex-direction: column;
+                align-items: flex-start;
+                position: relative;
+            }
+            .history-meta {
+                align-items: flex-start;
+                margin-top: 10px;
+            }
+            .history-image-wrapper {
+                position: absolute;
+                right: 20px;
+                top: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="loader-full" id="pageLoader">
+        <div class="spinner"></div>
+    </div>
+
+    <nav class="navbar">
+        <a href="index.html" class="brand">Watchlist</a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Search</a>
+            <a href="watchlist.html" class="nav-link">Dashboard</a>
+            <a href="history.html" class="nav-link active">History</a>
+            <a href="login.html" class="nav-link" id="authLink">Sign In</a>
+        </div>
+    </nav>
+
+    <div class="container" id="appContent" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <h2 class="page-header" style="margin-bottom: 0;">Activity History</h2>
+            <button id="clearHistoryBtn" class="clear-btn" onclick="window.clearHistory()" title="Clear all history">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                Clear History
+            </button>
+        </div>
+
+        <div class="history-list" id="historyList">
+            <!-- History items will be injected here -->
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db, onAuthStateChanged, signOut, doc, getDoc, setDoc } from './firebase-config.js';
+
+        let currentUser = null;
+        let windowUserHistory = [];
+
+        const pageLoader = document.getElementById('pageLoader');
+        const appContent = document.getElementById('appContent');
+
+        onAuthStateChanged(auth, async (user) => {
+            const authLink = document.getElementById('authLink');
+            if (user) {
+                currentUser = user;
+                authLink.textContent = "Logout";
+                authLink.href = "#";
+                authLink.onclick = (e) => {
+                    e.preventDefault();
+                    signOut(auth).then(() => {
+                        window.location.href = "login.html";
+                    });
+                };
+
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists() && userDoc.data().history) {
+                        windowUserHistory = userDoc.data().history;
+                    }
+                    renderHistory();
+                } catch (e) {
+                    console.error("Error fetching history", e);
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        function renderHistory() {
+            pageLoader.style.display = 'none';
+            appContent.style.display = 'block';
+
+            const container = document.getElementById('historyList');
+
+            if (!windowUserHistory || windowUserHistory.length === 0) {
+                container.innerHTML = '<div class="empty-state">No activity history yet. Start exploring and adding titles!</div>';
+                return;
+            }
+
+            // Sort history by timestamp descending
+            const sortedHistory = [...windowUserHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            const defaultImg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxZDIyIiBzdHJva2Utd2lkdGg9IjIiPjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgcng9IjQiLz48cGF0aCBkPSJNMTAgMjBsMTAgMTAiLz48cGF0aCBkPSJNMjAgMjBMMTAgMzAiLz48L3N2Zz4=';
+
+            const html = sortedHistory.map(item => {
+                const dateObj = new Date(item.timestamp);
+                const dateStr = dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+                const timeStr = dateObj.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                
+                let badgeClass = '';
+                if (item.action.includes('Added to Watchlist')) badgeClass = 'action-add-watchlist';
+                else if (item.action.includes('Removed from Watchlist')) badgeClass = 'action-rem-watchlist';
+                else if (item.action.includes('Added to Favorites')) badgeClass = 'action-add-fav';
+                else if (item.action.includes('Removed from Favorites')) badgeClass = 'action-rem-fav';
+                else if (item.action.includes('Status:')) badgeClass = 'action-status';
+                else badgeClass = 'action-rem-watchlist'; // default fallback
+
+                const cleanTitle = item.title ? item.title.replace(/"/g, '&quot;') : 'Unknown Title';
+                const imageSrc = item.image || defaultImg;
+
+                return `
+                <div class="history-card">
+                    <div class="history-image-wrapper">
+                        <img src="${imageSrc}" class="history-image" alt="${cleanTitle}" onerror="this.src='${defaultImg}'">
+                    </div>
+                    <div class="history-content">
+                        <div class="action-badge ${badgeClass}">${item.action}</div>
+                        <div class="history-title">${cleanTitle}</div>
+                    </div>
+                    <div class="history-meta">
+                        <div class="history-date">${dateStr}</div>
+                        <div class="history-time">${timeStr}</div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        window.clearHistory = async function() {
+            if (!currentUser) return;
+            
+            if (confirm("Are you sure you want to clear your entire activity history? This cannot be undone.")) {
+                windowUserHistory = [];
+                try {
+                    await setDoc(doc(db, "users", currentUser.uid), { history: windowUserHistory }, { merge: true });
+                    renderHistory();
+                } catch (e) {
+                    console.error("Error clearing history", e);
+                    alert("Failed to clear history. Please try again.");
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

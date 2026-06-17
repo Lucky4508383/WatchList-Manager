@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In - Universal Watchlist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ed1c24; /* Trakt Red */
-            --primary-hover: #ff333a;
-            --primary-glow: rgba(237, 28, 36, 0.4);
-            --bg-body: #09090b;
-            --bg-glass: rgba(20, 20, 25, 0.65);
-            --bg-glass-hover: rgba(30, 30, 35, 0.8);
-            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary: #00f0ff;
+            --primary-hover: #00c3ff;
+            --primary-glow: rgba(0, 240, 255, 0.6);
+            --bg-body: #05050a;
+            --bg-glass: rgba(10, 10, 15, 0.8);
+            --bg-glass-hover: rgba(15, 15, 25, 0.9);
+            --border-glass: rgba(0, 240, 255, 0.2);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -29,24 +29,17 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
-            /* Animated background mesh gradient */
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(237, 28, 36, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(30, 58, 138, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(237, 28, 36, 0.1) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(15, 23, 42, 0.4) 0px, transparent 50%);
-            background-attachment: fixed;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .auth-container {
-            background: rgba(15, 15, 20, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid var(--border-glass);
-            border-radius: 24px;
+            border-radius: 4px;
             padding: 50px 40px;
             width: 100%;
             max-width: 440px;
@@ -56,13 +49,15 @@
         }
 
         .brand {
+            font-family: 'Rajdhani', sans-serif;
             font-size: 2rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #ffccd0);
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
-            letter-spacing: -0.5px;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -83,8 +78,11 @@
         }
 
         .auth-title {
-            font-size: 1.5rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
             font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             margin-bottom: 8px;
             text-align: center;
         }
@@ -113,11 +111,11 @@
             width: 100%;
             padding: 16px 20px;
             background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+            border-radius: 4px;
             color: white;
             font-size: 1rem;
-            font-family: inherit;
+            font-family: 'JetBrains Mono', monospace;
             transition: all 0.3s ease;
         }
 
@@ -125,30 +123,33 @@
             outline: none;
             border-color: var(--primary);
             background: rgba(0, 0, 0, 0.6);
-            box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.2);
+            box-shadow: 0 0 0 2px var(--primary-glow);
         }
 
         .auth-btn {
             width: 100%;
             padding: 16px;
             background: var(--primary);
-            color: white;
+            color: #05050a;
             border: none;
-            border-radius: 12px;
-            font-size: 1.05rem;
+            border-radius: 2px;
+            font-size: 1.1rem;
             font-weight: 700;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(237, 28, 36, 0.3);
+            box-shadow: 0 0 15px var(--primary-glow);
         }
 
         .auth-btn:hover {
             background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 25px rgba(237, 28, 36, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px var(--primary-glow);
         }
 
         .auth-btn:active {
@@ -183,11 +184,11 @@
         }
 
         .error-message {
-            background: rgba(255, 77, 79, 0.1);
-            color: #ff4d4f;
+            background: rgba(255, 0, 60, 0.1);
+            color: #ff003c;
             padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 77, 79, 0.3);
+            border-radius: 4px;
+            border: 1px solid rgba(255, 0, 60, 0.3);
             margin-bottom: 20px;
             font-size: 0.9rem;
             display: none;

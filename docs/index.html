@@ -5,17 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search - Universal Watchlist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ed1c24;
-            /* Trakt Red */
-            --primary-hover: #ff333a;
-            --primary-glow: rgba(237, 28, 36, 0.4);
-            --bg-body: #09090b;
-            --bg-glass: rgba(20, 20, 25, 0.65);
-            --bg-glass-hover: rgba(30, 30, 35, 0.8);
-            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary: #00f0ff;
+            --primary-hover: #00c3ff;
+            --primary-glow: rgba(0, 240, 255, 0.6);
+            --bg-body: #05050a;
+            --bg-glass: rgba(10, 10, 15, 0.8);
+            --bg-glass-hover: rgba(15, 15, 25, 0.9);
+            --border-glass: rgba(0, 240, 255, 0.2);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -31,24 +30,6 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(237, 28, 36, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(30, 58, 138, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(237, 28, 36, 0.1) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(15, 23, 42, 0.4) 0px, transparent 50%);
-            pointer-events: none;
-            will-change: transform;
-            transform: translateZ(0);
         }
 
         /* Glassmorphism Navbar */
@@ -68,13 +49,15 @@
         }
 
         .brand {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #ffccd0);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
-            letter-spacing: -0.5px;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -154,13 +137,13 @@
             padding: 20px 28px;
             padding-left: 60px;
             font-size: 1.25rem;
-            border-radius: 16px;
+            border-radius: 4px;
             border: 1px solid var(--border-glass);
-            background: rgba(20, 20, 25, 0.85);
+            background: rgba(10, 10, 15, 0.85);
             color: white;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'JetBrains Mono', monospace;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
         }
 
         .search-input::placeholder {
@@ -174,9 +157,9 @@
 
         .search-input:focus {
             outline: none;
-            border-color: rgba(237, 28, 36, 0.6);
-            background: rgba(20, 20, 25, 0.85);
-            box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.2), 0 10px 40px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary);
+            background: rgba(10, 10, 15, 0.95);
+            box-shadow: 0 0 0 2px var(--primary-glow), 0 10px 40px rgba(0, 0, 0, 0.6);
         }
 
         .search-icon {
@@ -217,14 +200,17 @@
 
         /* Global Header */
         .page-header {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
             font-size: 2.5rem;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 30px;
             color: white;
             display: flex;
             align-items: center;
             gap: 12px;
-            letter-spacing: -1px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--primary-glow);
         }
 
         /* Results Grid */
@@ -264,9 +250,9 @@
             position: relative;
             width: 100%;
             aspect-ratio: 2 / 3;
-            border-radius: 12px;
+            border-radius: 4px;
             overflow: hidden;
-            background-color: rgba(20, 20, 25, 0.5);
+            background-color: rgba(10, 10, 15, 0.5);
             border: 1px solid var(--border-glass);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
             transform-origin: center bottom;
@@ -312,11 +298,12 @@
 
         .overlay-select {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--border-glass);
             color: #fff;
             padding: 10px 12px;
-            border-radius: 8px;
+            border-radius: 2px;
             font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
             width: 100%;
             background: rgba(30, 30, 35, 0.95);
@@ -341,19 +328,19 @@
 
         .overlay-btn {
             background: var(--primary);
-            color: white;
+            color: #05050a;
             border: none;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 2px;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.9rem;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1rem;
             margin-top: 5px;
-            box-shadow: 0 4px 15px rgba(237, 28, 36, 0.3);
+            box-shadow: 0 0 10px var(--primary-glow);
             position: relative;
             overflow: hidden;
-            font-family: inherit;
         }
 
         .overlay-btn::after {
@@ -428,12 +415,13 @@
             grid-column: 1 / -1;
             text-align: center;
             padding: 80px 20px;
-            color: var(--text-muted);
+            color: var(--primary);
             font-size: 1.25rem;
-            background: rgba(20, 20, 25, 0.9);
-            border-radius: 16px;
+            background: rgba(10, 10, 15, 0.9);
+            border-radius: 4px;
             border: 1px solid var(--border-glass);
-            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 400;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -441,9 +429,10 @@
         }
 
         .empty-prompt::before {
-            content: '🔎';
+            content: '[_]';
             font-size: 3rem;
-            opacity: 0.5;
+            opacity: 0.8;
+            color: var(--primary);
             display: block;
         }
 
@@ -459,9 +448,11 @@
             border-left: 4px solid var(--primary);
             color: white;
             padding: 16px 24px;
-            border-radius: 12px;
+            border-radius: 4px;
             font-weight: 600;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            box-shadow: 0 0 20px var(--primary-glow);
             transform: translateX(120%);
             opacity: 0;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -477,10 +468,10 @@
         }
 
         .toast-icon {
-            color: var(--primary);
-            background: rgba(237, 28, 36, 0.1);
+            color: #05050a;
+            background: var(--primary);
             padding: 6px;
-            border-radius: 50%;
+            border-radius: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -505,12 +496,15 @@
         }
 
         .fav-icon-btn:hover {
-            background: rgba(237, 28, 36, 0.2);
+            background: rgba(255, 0, 127, 0.2);
+            border-color: #ff007f;
             transform: scale(1.1);
         }
 
         .fav-icon-btn.active {
-            color: #ed1c24;
+            color: #ff007f;
+            border-color: #ff007f;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
         }
 
         .fav-icon-btn svg {
@@ -521,8 +515,8 @@
         }
 
         .fav-icon-btn.active svg {
-            fill: #ed1c24;
-            stroke: #ed1c24;
+            fill: #ff007f;
+            stroke: #ff007f;
             transform: scale(1.1);
         }
 
@@ -559,6 +553,7 @@
         <div class="nav-links">
             <a href="index.html" class="nav-link active">Search</a>
             <a href="watchlist.html" class="nav-link">Dashboard</a>
+            <a href="history.html" class="nav-link">History</a>
             <a href="login.html" class="nav-link" id="authLink">Sign In</a>
         </div>
     </nav>
@@ -619,6 +614,7 @@
         let currentUser = null;
         let windowUserWatchlist = [];
         let windowUserFavorites = [];
+        let windowUserHistory = [];
         let currentCombinedResults = [];
 
         onAuthStateChanged(auth, async (user) => {
@@ -643,6 +639,9 @@
                         if (userDoc.data().favorites) {
                             windowUserFavorites = userDoc.data().favorites;
                         }
+                        if (userDoc.data().history) {
+                            windowUserHistory = userDoc.data().history;
+                        }
                     }
                 } catch (e) {
                     console.error("Error fetching data", e);
@@ -651,6 +650,7 @@
                 currentUser = null;
                 windowUserWatchlist = [];
                 windowUserFavorites = [];
+                windowUserHistory = [];
                 authLink.textContent = "Sign In";
                 authLink.href = "login.html";
                 authLink.onclick = null;
@@ -860,6 +860,14 @@
             const newList = [...windowUserWatchlist, mediaObj];
             windowUserWatchlist = newList;
 
+            windowUserHistory.push({
+                id: Date.now(),
+                action: 'Added to Watchlist',
+                title,
+                image,
+                timestamp: new Date().toISOString()
+            });
+
             window.showToast();
 
             const overlayDiv = btnElement.parentElement;
@@ -878,7 +886,7 @@
             }, 2000);
 
             try {
-                await setDoc(doc(db, "users", currentUser.uid), { watchlist: newList }, { merge: true });
+                await setDoc(doc(db, "users", currentUser.uid), { watchlist: newList, history: windowUserHistory }, { merge: true });
             } catch (e) {
                 console.error("Error saving to Firestore", e);
             }
@@ -897,6 +905,13 @@
                 // Remove from favorites
                 windowUserFavorites.splice(existingIndex, 1);
                 btnElement.classList.remove('active');
+                windowUserHistory.push({
+                    id: Date.now(),
+                    action: 'Removed from Favorites',
+                    title,
+                    image,
+                    timestamp: new Date().toISOString()
+                });
             } else {
                 // Add to favorites
                 const favObj = {
@@ -909,10 +924,17 @@
                 };
                 windowUserFavorites.push(favObj);
                 btnElement.classList.add('active');
+                windowUserHistory.push({
+                    id: Date.now(),
+                    action: 'Added to Favorites',
+                    title,
+                    image,
+                    timestamp: new Date().toISOString()
+                });
             }
 
             try {
-                await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites }, { merge: true });
+                await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites, history: windowUserHistory }, { merge: true });
             } catch (e) {
                 console.error("Error toggling favorite", e);
             }

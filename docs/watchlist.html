@@ -5,18 +5,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Universal Watchlist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #ed1c24;
-            /* Trakt Red */
-            --primary-hover: #ff333a;
-            --primary-glow: rgba(237, 28, 36, 0.4);
-            --bg-body: #09090b;
-            --bg-glass: rgba(20, 20, 25, 0.65);
-            --bg-glass-hover: rgba(30, 30, 35, 0.8);
-            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary: #00f0ff;
+            --primary-hover: #00c3ff;
+            --primary-glow: rgba(0, 240, 255, 0.6);
+            --bg-body: #05050a;
+            --bg-glass: rgba(10, 10, 15, 0.8);
+            --bg-glass-hover: rgba(15, 15, 25, 0.9);
+            --border-glass: rgba(0, 240, 255, 0.2);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -32,24 +31,6 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            background-image:
-                radial-gradient(at 0% 0%, rgba(237, 28, 36, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(30, 58, 138, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(237, 28, 36, 0.1) 0px, transparent 50%),
-                radial-gradient(at 0% 100%, rgba(15, 23, 42, 0.4) 0px, transparent 50%);
-            pointer-events: none;
-            will-change: transform;
-            transform: translateZ(0);
         }
 
         /* Glassmorphism Navbar */
@@ -69,13 +50,15 @@
         }
 
         .brand {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #ffccd0);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
-            letter-spacing: -0.5px;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -164,11 +147,14 @@
         }
 
         .back-btn-global {
-            background: rgba(237, 28, 36, 0.15);
+            background: rgba(0, 240, 255, 0.15);
             border: 1px solid var(--primary);
             color: white;
             padding: 10px 20px;
-            border-radius: 12px;
+            border-radius: 2px;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -176,6 +162,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 0 10px var(--primary-glow);
         }
 
         .back-btn-global:hover {
@@ -196,30 +183,33 @@
 
         /* Global Header */
         .page-header {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
             font-size: 2.5rem;
-            font-weight: 800;
+            font-weight: 700;
             margin-bottom: 0;
             color: white;
             display: flex;
             align-items: center;
             gap: 12px;
-            letter-spacing: -1px;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px var(--primary-glow);
         }
 
         .export-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
             color: white;
             padding: 10px 20px;
-            border-radius: 12px;
+            border-radius: 2px;
             font-size: 0.95rem;
-            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 400;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-family: inherit;
         }
 
         .export-btn:hover {
@@ -234,9 +224,9 @@
 
         /* Stats Chart Container */
         .stats-container {
-            background: rgba(20, 20, 25, 0.9);
+            background: rgba(10, 10, 15, 0.9);
             border: 1px solid var(--border-glass);
-            border-radius: 16px;
+            border-radius: 4px;
             padding: 20px;
             display: flex;
             align-items: center;
@@ -248,10 +238,11 @@
         }
 
         .stats-title {
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.9rem;
-            color: var(--text-muted);
+            color: var(--primary);
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 400;
             letter-spacing: 1px;
             margin-bottom: 15px;
         }
@@ -275,12 +266,14 @@
         }
 
         .category-header h3 {
-            font-size: 1.5rem;
-            font-weight: 800;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            font-size: 1.8rem;
+            font-weight: 700;
             color: white;
             display: flex;
             align-items: center;
-            letter-spacing: -0.5px;
+            letter-spacing: 1px;
         }
 
         .category-header h3::before {
@@ -315,12 +308,13 @@
 
         .count-badge {
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-glass);
             color: white;
             font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
             padding: 2px 10px;
-            border-radius: 12px;
-            font-weight: 600;
+            border-radius: 2px;
+            font-weight: 400;
         }
 
         /* Results Grid */
@@ -382,9 +376,9 @@
             position: relative;
             width: 100%;
             aspect-ratio: 2 / 3;
-            border-radius: 12px;
+            border-radius: 4px;
             overflow: hidden;
-            background-color: rgba(20, 20, 25, 0.5);
+            background-color: rgba(10, 10, 15, 0.5);
             border: 1px solid var(--border-glass);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
             transform-origin: center bottom;
@@ -428,12 +422,13 @@
         }
 
         .overlay-select {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid var(--border-glass);
             color: #fff;
             padding: 10px 12px;
-            border-radius: 8px;
+            border-radius: 2px;
             font-size: 0.85rem;
+            font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
             width: 100%;
             background: rgba(30, 30, 35, 0.95);
@@ -443,7 +438,6 @@
             background-position: right 10px top 50%;
             background-size: 10px auto;
             transition: all 0.2s;
-            font-family: inherit;
         }
 
         .overlay-select option {
@@ -452,19 +446,21 @@
 
         .overlay-select:focus {
             outline: none;
-            border-color: rgba(237, 28, 36, 0.8);
+            border-color: var(--primary);
             background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 10px var(--primary-glow);
         }
 
         .platform-tag {
-            background: rgba(20, 20, 25, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 10, 15, 0.8);
+            border: 1px solid var(--border-glass);
             color: white;
             padding: 4px 10px;
-            border-radius: 8px;
+            border-radius: 2px;
             font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 400;
             position: absolute;
             top: 10px;
             left: 10px;
@@ -473,12 +469,13 @@
         }
 
         .new-season-inline {
-            background: linear-gradient(135deg, #ed1c24, #ff333a);
-            color: white;
+            background: var(--primary);
+            color: #05050a;
             padding: 2px 6px;
-            border-radius: 4px;
+            border-radius: 2px;
             font-size: 0.65rem;
-            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-left: 8px;
@@ -490,33 +487,34 @@
         @keyframes pulse-badge {
             0% {
                 transform: scale(1);
-                box-shadow: 0 2px 10px rgba(237, 28, 36, 0.3);
+                box-shadow: 0 0 10px var(--primary-glow);
             }
 
             50% {
                 transform: scale(1.05);
-                box-shadow: 0 4px 15px rgba(237, 28, 36, 0.5);
+                box-shadow: 0 0 20px var(--primary-glow);
             }
 
             100% {
                 transform: scale(1);
-                box-shadow: 0 2px 10px rgba(237, 28, 36, 0.3);
+                box-shadow: 0 0 10px var(--primary-glow);
             }
         }
 
         .delete-btn-wide {
-            background: rgba(255, 77, 79, 0.1);
-            color: #ff4d4f;
-            border: 1px solid rgba(255, 77, 79, 0.4);
+            background: rgba(255, 0, 60, 0.1);
+            color: #ff003c;
+            border: 1px solid rgba(255, 0, 60, 0.4);
             padding: 10px 12px;
-            border-radius: 8px;
+            border-radius: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.2s;
             font-size: 0.85rem;
-            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 400;
             width: 100%;
             margin-top: 4px;
         }
@@ -550,12 +548,15 @@
         }
 
         .fav-icon-btn:hover {
-            background: rgba(237, 28, 36, 0.2);
+            background: rgba(255, 0, 127, 0.2);
+            border-color: #ff007f;
             transform: scale(1.1);
         }
 
         .fav-icon-btn.active {
-            color: #ed1c24;
+            color: #ff007f;
+            border-color: #ff007f;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
         }
 
         .fav-icon-btn svg {
@@ -566,8 +567,8 @@
         }
 
         .fav-icon-btn.active svg {
-            fill: #ed1c24;
-            stroke: #ed1c24;
+            fill: #ff007f;
+            stroke: #ff007f;
             transform: scale(1.1);
         }
 
@@ -579,14 +580,16 @@
         }
 
         .poster-title {
-            font-size: 1.05rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
             font-weight: 700;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             color: white;
-            letter-spacing: 0.2px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px var(--primary-glow);
         }
 
         .poster-year {
@@ -730,6 +733,7 @@
         <div class="nav-links">
             <a href="index.html" class="nav-link">Search</a>
             <a href="watchlist.html" class="nav-link active">Dashboard</a>
+            <a href="history.html" class="nav-link">History</a>
             <a href="login.html" class="nav-link" id="authLink">Sign In</a>
         </div>
     </nav>
@@ -855,6 +859,7 @@
         let currentUser = null;
         let windowUserWatchlist = [];
         let windowUserFavorites = [];
+        let windowUserHistory = [];
         let currentPlatformFilter = 'All';
         let currentTypeFilter = 'All';
         let currentExpandedRow = null;
@@ -878,6 +883,7 @@
                         const data = userDoc.data();
                         if (data.watchlist) windowUserWatchlist = data.watchlist;
                         if (data.favorites) windowUserFavorites = data.favorites;
+                        if (data.history) windowUserHistory = data.history;
                     }
                     refreshDashboard();
                 } catch (e) {
@@ -1273,10 +1279,21 @@
             if (card) {
                 card.style.animation = "fadeOut 0.3s ease forwards";
 
+                const itemToRemove = windowUserWatchlist.find(x => x.id === id);
+                if (itemToRemove) {
+                    windowUserHistory.push({
+                        id: Date.now(),
+                        action: 'Removed from Watchlist',
+                        title: itemToRemove.title,
+                        image: itemToRemove.image,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+
                 windowUserWatchlist = windowUserWatchlist.filter(x => x.id !== id);
 
                 try {
-                    await setDoc(doc(db, "users", currentUser.uid), { watchlist: windowUserWatchlist }, { merge: true });
+                    await setDoc(doc(db, "users", currentUser.uid), { watchlist: windowUserWatchlist, history: windowUserHistory }, { merge: true });
                 } catch (e) {
                     console.error("Delete Error", e);
                 }
@@ -1296,10 +1313,30 @@
         window.updateItem = async function (id, field, value) {
             let itemIndex = windowUserWatchlist.findIndex(x => x.id === id);
             if (itemIndex > -1) {
+                const oldVal = windowUserWatchlist[itemIndex][field];
                 windowUserWatchlist[itemIndex][field] = value;
 
+                if (field === 'status' && oldVal !== value) {
+                    const item = windowUserWatchlist[itemIndex];
+                    const formatStatus = (s) => {
+                        if (s === 'Watching' || s === 'watching') return 'Watching New';
+                        if (s === 'watching-another') return 'Watching Another S/M';
+                        if (s === 'plan-to-watch') return 'Plan to Watch';
+                        if (s === 'on-hold') return 'On Hold';
+                        if (s === 'watched') return 'Watched';
+                        return s;
+                    };
+                    windowUserHistory.push({
+                        id: Date.now(),
+                        action: `Status: ${formatStatus(value)}`,
+                        title: item.title,
+                        image: item.image,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+
                 try {
-                    await setDoc(doc(db, "users", currentUser.uid), { watchlist: windowUserWatchlist }, { merge: true });
+                    await setDoc(doc(db, "users", currentUser.uid), { watchlist: windowUserWatchlist, history: windowUserHistory }, { merge: true });
                     refreshDashboard();
                 } catch (e) {
                     console.error("Update Error", e);
@@ -1312,10 +1349,21 @@
             if (card) {
                 card.style.animation = "fadeOut 0.3s ease forwards";
 
+                const itemToRemove = windowUserFavorites.find(x => x.id === id);
+                if (itemToRemove) {
+                    windowUserHistory.push({
+                        id: Date.now(),
+                        action: 'Removed from Favorites',
+                        title: itemToRemove.title,
+                        image: itemToRemove.image,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+
                 windowUserFavorites = windowUserFavorites.filter(x => x.id !== id);
 
                 try {
-                    await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites }, { merge: true });
+                    await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites, history: windowUserHistory }, { merge: true });
                 } catch (e) {
                     console.error("Delete Error", e);
                 }
@@ -1361,6 +1409,13 @@
                 // Remove
                 windowUserFavorites.splice(existingIndex, 1);
                 btnElement.classList.remove('active');
+                windowUserHistory.push({
+                    id: Date.now(),
+                    action: 'Removed from Favorites',
+                    title: item.title,
+                    image: item.image,
+                    timestamp: new Date().toISOString()
+                });
             } else {
                 // Add
                 const favObj = {
@@ -1373,10 +1428,17 @@
                 };
                 windowUserFavorites.push(favObj);
                 btnElement.classList.add('active');
+                windowUserHistory.push({
+                    id: Date.now(),
+                    action: 'Added to Favorites',
+                    title: item.title,
+                    image: item.image,
+                    timestamp: new Date().toISOString()
+                });
             }
 
             try {
-                await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites }, { merge: true });
+                await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites, history: windowUserHistory }, { merge: true });
                 // Refresh favorites section
                 const favContainer = document.getElementById('list-favorites');
                 if (favContainer) {

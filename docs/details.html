@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Details - Universal Watchlist</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #ed1c24;
-            --primary-hover: #ff333a;
-            --primary-glow: rgba(237, 28, 36, 0.4);
-            --bg-body: #09090b;
-            --bg-glass: rgba(20, 20, 25, 0.65);
-            --bg-glass-hover: rgba(30, 30, 35, 0.8);
-            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary: #00f0ff;
+            --primary-hover: #00c3ff;
+            --primary-glow: rgba(0, 240, 255, 0.6);
+            --bg-body: #05050a;
+            --bg-glass: rgba(10, 10, 15, 0.8);
+            --bg-glass-hover: rgba(15, 15, 25, 0.9);
+            --border-glass: rgba(0, 240, 255, 0.2);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
@@ -50,13 +50,15 @@
         }
 
         .brand {
-            font-size: 1.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, #ffccd0);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #fff, var(--primary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-decoration: none;
-            letter-spacing: -0.5px;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -140,10 +142,10 @@
             flex-shrink: 0;
             width: 300px;
             height: 450px;
-            border-radius: 16px;
+            border-radius: 4px;
             overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+            border: 1px solid var(--border-glass);
         }
 
         .poster-container img {
@@ -166,11 +168,13 @@
         }
 
         .media-title {
+            font-family: 'Rajdhani', sans-serif;
             font-size: 3.5rem;
-            font-weight: 800;
+            font-weight: 700;
             line-height: 1.1;
-            letter-spacing: -1px;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--primary-glow);
         }
 
         .media-tagline {
@@ -188,12 +192,13 @@
         }
 
         .meta-tag {
-            background: rgba(40, 40, 45, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid var(--border-glass);
             padding: 6px 12px;
-            border-radius: 8px;
+            border-radius: 2px;
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 400;
+            font-family: 'JetBrains Mono', monospace;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -222,12 +227,13 @@
         }
 
         .action-select {
-            background: rgba(30, 30, 35, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(10, 10, 15, 0.95);
+            border: 1px solid var(--border-glass);
             color: white;
             padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 2px;
+            font-size: 0.95rem;
+            font-family: 'JetBrains Mono', monospace;
             cursor: pointer;
             appearance: none;
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
@@ -235,7 +241,6 @@
             background-position: right 14px top 50%;
             background-size: 12px auto;
             padding-right: 40px;
-            font-family: inherit;
         }
 
         .action-select option {
@@ -244,15 +249,18 @@
 
         .action-btn {
             background: var(--primary);
-            color: white;
+            color: #05050a;
             border: none;
             padding: 14px 24px;
-            border-radius: 12px;
+            border-radius: 2px;
             font-weight: 700;
-            font-size: 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(237, 28, 36, 0.3);
+            box-shadow: 0 0 15px var(--primary-glow);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -260,8 +268,8 @@
 
         .action-btn:hover {
             background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(237, 28, 36, 0.5);
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px var(--primary-glow);
         }
 
         .content-section {
@@ -278,8 +286,10 @@
         }
 
         .section-title {
+            font-family: 'Rajdhani', sans-serif;
             font-size: 1.8rem;
             font-weight: 700;
+            text-transform: uppercase;
             margin-bottom: 25px;
             display: flex;
             align-items: center;
@@ -347,7 +357,7 @@
             gap: 10px;
             background: var(--bg-glass);
             border: 1px solid var(--border-glass);
-            border-radius: 12px;
+            border-radius: 4px;
             overflow: hidden;
             padding-bottom: 12px;
         }
@@ -393,7 +403,7 @@
         .video-wrapper {
             width: 100%;
             aspect-ratio: 16/9;
-            border-radius: 12px;
+            border-radius: 4px;
             overflow: hidden;
             border: 1px solid var(--border-glass);
             background: #111;
@@ -429,7 +439,7 @@
         .episode-card {
             background: var(--bg-glass);
             border: 1px solid var(--border-glass);
-            border-radius: 12px;
+            border-radius: 4px;
             padding: 15px;
             display: flex;
             gap: 15px;
@@ -446,7 +456,7 @@
             width: 160px;
             height: 90px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 2px;
             background: #111;
             flex-shrink: 0;
         }
@@ -507,9 +517,9 @@
             position: relative;
             width: 100%;
             aspect-ratio: 2 / 3;
-            border-radius: 12px;
+            border-radius: 4px;
             overflow: hidden;
-            background-color: rgba(20, 20, 25, 0.5);
+            background-color: rgba(10, 10, 15, 0.5);
             border: 1px solid var(--border-glass);
             transition: transform 0.3s, box-shadow 0.3s;
         }
@@ -557,12 +567,15 @@
         }
 
         .fav-icon-btn:hover {
-            background: rgba(237, 28, 36, 0.2);
+            background: rgba(255, 0, 127, 0.2);
+            border-color: #ff007f;
             transform: scale(1.1);
         }
 
         .fav-icon-btn.active {
-            color: #ed1c24;
+            color: #ff007f;
+            border-color: #ff007f;
+            box-shadow: 0 0 10px rgba(255, 0, 127, 0.4);
         }
 
         .fav-icon-btn svg {
@@ -573,8 +586,8 @@
         }
 
         .fav-icon-btn.active svg {
-            fill: #ed1c24;
-            stroke: #ed1c24;
+            fill: #ff007f;
+            stroke: #ff007f;
             transform: scale(1.1);
         }
 
@@ -643,6 +656,7 @@
         <div class="nav-links">
             <a href="index.html" class="nav-link">Search</a>
             <a href="watchlist.html" class="nav-link">Dashboard</a>
+            <a href="history.html" class="nav-link">History</a>
             <a href="login.html" class="nav-link" id="authLink">Sign In</a>
         </div>
     </nav>
@@ -741,6 +755,7 @@
         let currentUser = null;
         let windowUserWatchlist = [];
         let windowUserFavorites = [];
+        let windowUserHistory = [];
         let currentMediaObj = null; // Store fetched data
 
         const pageLoader = document.getElementById('pageLoader');
@@ -763,6 +778,7 @@
                         const data = userDoc.data();
                         if (data.watchlist) windowUserWatchlist = data.watchlist;
                         if (data.favorites) windowUserFavorites = data.favorites;
+                        if (data.history) windowUserHistory = data.history;
                     }
                 } catch (e) {
                     console.error("Error fetching watchlist/favorites", e);
@@ -771,6 +787,7 @@
                 currentUser = null;
                 windowUserWatchlist = [];
                 windowUserFavorites = [];
+                windowUserHistory = [];
                 authLink.textContent = "Sign In";
                 authLink.href = "login.html";
                 authLink.onclick = null;
@@ -1207,6 +1224,13 @@
                 if (existingIndex > -1) {
                     // Remove from fav
                     windowUserFavorites.splice(existingIndex, 1);
+                    windowUserHistory.push({
+                        id: Date.now(),
+                        action: 'Removed from Favorites',
+                        title,
+                        image,
+                        timestamp: new Date().toISOString()
+                    });
                 } else {
                     // Add to fav
                     windowUserFavorites.push({
@@ -1217,13 +1241,20 @@
                         image,
                         year: itemYear
                     });
+                    windowUserHistory.push({
+                        id: Date.now(),
+                        action: 'Added to Favorites',
+                        title,
+                        image,
+                        timestamp: new Date().toISOString()
+                    });
                 }
 
                 // Optimistically update UI
                 updateWatchlistUI();
 
                 try {
-                    await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites }, { merge: true });
+                    await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites, history: windowUserHistory }, { merge: true });
                 } catch (e) {
                     console.error("Error saving favorites to Firestore", e);
                 }
@@ -1268,9 +1299,16 @@
                     };
 
                     windowUserWatchlist.push(mediaObj);
+                    windowUserHistory.push({
+                        id: Date.now(),
+                        action: 'Added to Watchlist',
+                        title,
+                        image,
+                        timestamp: new Date().toISOString()
+                    });
 
                     try {
-                        await setDoc(doc(db, "users", currentUser.uid), { watchlist: windowUserWatchlist }, { merge: true });
+                        await setDoc(doc(db, "users", currentUser.uid), { watchlist: windowUserWatchlist, history: windowUserHistory }, { merge: true });
                         btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"></path></svg> Added`;
                         setTimeout(() => updateWatchlistUI(), 1500);
                     } catch (e) {
@@ -1293,6 +1331,13 @@
                 // Remove
                 windowUserFavorites.splice(existingIndex, 1);
                 btnElement.classList.remove('active');
+                windowUserHistory.push({
+                    id: Date.now(),
+                    action: 'Removed from Favorites',
+                    title,
+                    image,
+                    timestamp: new Date().toISOString()
+                });
             } else {
                 // Add
                 const favObj = {
@@ -1305,10 +1350,17 @@
                 };
                 windowUserFavorites.push(favObj);
                 btnElement.classList.add('active');
+                windowUserHistory.push({
+                    id: Date.now(),
+                    action: 'Added to Favorites',
+                    title,
+                    image,
+                    timestamp: new Date().toISOString()
+                });
             }
 
             try {
-                await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites }, { merge: true });
+                await setDoc(doc(db, "users", currentUser.uid), { favorites: windowUserFavorites, history: windowUserHistory }, { merge: true });
             } catch (e) {
                 console.error("Error toggling favorite", e);
             }
