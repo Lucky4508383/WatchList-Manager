@@ -1105,35 +1105,127 @@
             container.innerHTML = html;
         }
 
-        function renderSeasons(seasonArray) {
+        async function renderSeasons(seasonArray) {
             if (!seasonArray || seasonArray.length === 0) return;
             document.getElementById('seasonSection').style.display = 'block';
 
             const container = document.getElementById('seasonContainer');
+            container.innerHTML = '<div class="spinner" style="margin: 20px auto;"></div>';
+
             const defaultImg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxZDIyIiBzdHJva2Utd2lkdGg9IjIiPjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgcng9IjQiLz48cGF0aCBkPSJNMTAgMjBsMTAgMTAiLz48cGF0aCBkPSJNMjAgMjBMMTAgMzAiLz48L3N2Zz4=';
 
-            // Optionally filter out specials (season 0) or just sort them
             const sortedSeasons = seasonArray.filter(s => s.season_number > 0).sort((a, b) => a.season_number - b.season_number);
-            if (sortedSeasons.length === 0) return; // if only specials were there
+            if (sortedSeasons.length === 0) {
+                container.innerHTML = '';
+                document.getElementById('seasonSection').style.display = 'none';
+                return;
+            }
 
-            const html = sortedSeasons.map(season => {
-                const img = season.poster_path ? `https://image.tmdb.org/t/p/w200${season.poster_path}` : defaultImg;
-                const year = season.air_date ? season.air_date.substring(0, 4) : 'N/A';
-                const epCount = season.episode_count ? `${season.episode_count} Episodes` : '';
+            const partsList = [];
+            const gapThreshold = 45; // days
+
+            for (const season of sortedSeasons) {
+                try {
+                    const res = await fetch(`https://api.themoviedb.org/3/tv/${currentMediaObj._myId}/season/${season.season_number}?api_key=15d2ea6d0dc1d476efbca3eba2b9bbfb`);
+                    const data = await res.json();
+                    
+                    if (!data.episodes || data.episodes.length === 0) {
+                        partsList.push({
+                            seasonNumber: season.season_number,
+                            partIndex: null,
+                            name: season.name,
+                            poster: season.poster_path,
+                            year: season.air_date ? season.air_date.substring(0, 4) : 'N/A',
+                            epCount: season.episode_count
+                        });
+                        continue;
+                    }
+
+                    let currentPart = 1;
+                    let lastDate = null;
+                    const groupedEpisodes = [];
+
+                    data.episodes.forEach(ep => {
+                        if (ep.air_date) {
+                            const currentDate = new Date(ep.air_date);
+                            if (lastDate) {
+                                const diffTime = Math.abs(currentDate - lastDate);
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                if (diffDays > gapThreshold) {
+                                    currentPart++;
+                                }
+                            }
+                            lastDate = currentDate;
+                        }
+                        if (!groupedEpisodes[currentPart - 1]) {
+                            groupedEpisodes[currentPart - 1] = [];
+                        }
+                        groupedEpisodes[currentPart - 1].push(ep);
+                    });
+
+                    const minEpisodesPerPart = 5;
+                    for (let i = groupedEpisodes.length - 1; i > 0; i--) {
+                        if (groupedEpisodes[i].length < minEpisodesPerPart) {
+                            groupedEpisodes[i - 1] = groupedEpisodes[i - 1].concat(groupedEpisodes[i]);
+                            groupedEpisodes.splice(i, 1);
+                        }
+                    }
+                    if (groupedEpisodes.length > 1 && groupedEpisodes[0].length < minEpisodesPerPart) {
+                        groupedEpisodes[1] = groupedEpisodes[0].concat(groupedEpisodes[1]);
+                        groupedEpisodes.splice(0, 1);
+                    }
+
+                    if (groupedEpisodes.length > 1) {
+                        groupedEpisodes.forEach((group, index) => {
+                            partsList.push({
+                                seasonNumber: season.season_number,
+                                partIndex: index,
+                                name: `${season.name} - Part ${index + 1}`,
+                                poster: season.poster_path,
+                                year: group[0]?.air_date ? group[0].air_date.substring(0, 4) : 'N/A',
+                                epCount: group.length
+                            });
+                        });
+                    } else {
+                        partsList.push({
+                            seasonNumber: season.season_number,
+                            partIndex: null,
+                            name: season.name,
+                            poster: season.poster_path,
+                            year: season.air_date ? season.air_date.substring(0, 4) : 'N/A',
+                            epCount: season.episode_count
+                        });
+                    }
+                } catch (err) {
+                    console.error("Error fetching season", season.season_number, err);
+                    partsList.push({
+                        seasonNumber: season.season_number,
+                        partIndex: null,
+                        name: season.name,
+                        poster: season.poster_path,
+                        year: season.air_date ? season.air_date.substring(0, 4) : 'N/A',
+                        epCount: season.episode_count
+                    });
+                }
+            }
+
+            const html = partsList.map(part => {
+                const img = part.poster ? `https://image.tmdb.org/t/p/w200${part.poster}` : defaultImg;
+                const epCountStr = part.epCount ? `${part.epCount} Episodes` : '';
                 return `
-                <div class="poster-card" onclick="window.fetchAndRenderEpisodes(${season.season_number}, '${season.name.replace(/'/g, "\\'")}')">
+                <div class="poster-card" onclick="window.fetchAndRenderEpisodes(${part.seasonNumber}, '${part.name.replace(/'/g, "\\'")}', ${part.partIndex})">
                     <div class="poster-wrapper">
-                        <img src="${img}" alt="${season.name}" onerror="this.src='${defaultImg}'">
+                        <img src="${img}" alt="${part.name}" onerror="this.src='${defaultImg}'">
                     </div>
-                    <div class="poster-title">${season.name}</div>
-                    <div class="poster-year">${year} ${epCount ? '• ' + epCount : ''}</div>
+                    <div class="poster-title">${part.name}</div>
+                    <div class="poster-year">${part.year} ${epCountStr ? '• ' + epCountStr : ''}</div>
                 </div>
                 `;
             }).join('');
             container.innerHTML = html;
         }
 
-        window.fetchAndRenderEpisodes = async (seasonNumber, seasonName) => {
+        window.fetchAndRenderEpisodes = async (seasonNumber, seasonName, partIndex) => {
             const container = document.getElementById('episodesContainer');
             const section = document.getElementById('episodesSection');
             const titleEl = document.getElementById('episodesTitle');
@@ -1157,7 +1249,51 @@
 
                 const defaultImg = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWIxZDIyIiBzdHJva2Utd2lkdGg9IjIiPjxyZWN0IHdpZHRoPSIzMCIgaGVpZ2h0PSI0MCIgcng9IjQiLz48cGF0aCBkPSJNMTAgMjBsMTAgMTAiLz48cGF0aCBkPSJNMjAgMjBMMTAgMzAiLz48L3N2Zz4=';
 
-                const html = data.episodes.map(ep => {
+                let episodesToRender = data.episodes;
+
+                if (partIndex !== null && partIndex !== undefined) {
+                    let currentPart = 1;
+                    let lastDate = null;
+                    const gapThreshold = 45; // days
+                    const groupedEpisodes = [];
+
+                    data.episodes.forEach(ep => {
+                        if (ep.air_date) {
+                            const currentDate = new Date(ep.air_date);
+                            if (lastDate) {
+                                const diffTime = Math.abs(currentDate - lastDate);
+                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                if (diffDays > gapThreshold) {
+                                    currentPart++;
+                                }
+                            }
+                            lastDate = currentDate;
+                        }
+                        if (!groupedEpisodes[currentPart - 1]) {
+                            groupedEpisodes[currentPart - 1] = [];
+                        }
+                        groupedEpisodes[currentPart - 1].push(ep);
+                    });
+
+                    const minEpisodesPerPart = 5;
+                    for (let i = groupedEpisodes.length - 1; i > 0; i--) {
+                        if (groupedEpisodes[i].length < minEpisodesPerPart) {
+                            groupedEpisodes[i - 1] = groupedEpisodes[i - 1].concat(groupedEpisodes[i]);
+                            groupedEpisodes.splice(i, 1);
+                        }
+                    }
+                    if (groupedEpisodes.length > 1 && groupedEpisodes[0].length < minEpisodesPerPart) {
+                        groupedEpisodes[1] = groupedEpisodes[0].concat(groupedEpisodes[1]);
+                        groupedEpisodes.splice(0, 1);
+                    }
+
+                    if (groupedEpisodes[partIndex]) {
+                        episodesToRender = groupedEpisodes[partIndex];
+                    }
+                }
+
+                let html = '';
+                html += episodesToRender.map(ep => {
                     const img = ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : defaultImg;
                     const runTime = ep.runtime ? ` • ${ep.runtime} min` : '';
                     return `
