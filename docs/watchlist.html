@@ -860,9 +860,20 @@
         let windowUserWatchlist = [];
         let windowUserFavorites = [];
         let windowUserHistory = [];
-        let currentPlatformFilter = 'All';
-        let currentTypeFilter = 'All';
+        let currentPlatformFilter = sessionStorage.getItem('dashboard_platform') || 'All';
+        let currentTypeFilter = sessionStorage.getItem('dashboard_type') || 'All';
         let currentExpandedRow = null;
+
+        // Try to load cached data immediately to prevent full refresh UI flicker on back
+        const cachedData = sessionStorage.getItem('dashboard_data');
+        if (cachedData) {
+            try {
+                const parsed = JSON.parse(cachedData);
+                windowUserWatchlist = parsed.watchlist || [];
+                windowUserFavorites = parsed.favorites || [];
+                windowUserHistory = parsed.history || [];
+            } catch (e) {}
+        }
 
         onAuthStateChanged(auth, async (user) => {
             const authLink = document.getElementById('authLink');
@@ -877,15 +888,33 @@
                     });
                 };
 
+                // Render cached data immediately if available
+                if (windowUserWatchlist.length > 0 || windowUserFavorites.length > 0) {
+                    refreshDashboard(true); // pass true to indicate it's from cache
+                }
+
                 try {
                     const userDoc = await getDoc(doc(db, "users", user.uid));
                     if (userDoc.exists()) {
                         const data = userDoc.data();
-                        if (data.watchlist) windowUserWatchlist = data.watchlist;
-                        if (data.favorites) windowUserFavorites = data.favorites;
-                        if (data.history) windowUserHistory = data.history;
+                        let changed = false;
+                        
+                        // Simple check to avoid re-rendering if identical (prevents flicker)
+                        const newDataStr = JSON.stringify({w: data.watchlist, f: data.favorites});
+                        const oldDataStr = JSON.stringify({w: windowUserWatchlist, f: windowUserFavorites});
+                        
+                        if (newDataStr !== oldDataStr) {
+                            if (data.watchlist) windowUserWatchlist = data.watchlist;
+                            if (data.favorites) windowUserFavorites = data.favorites;
+                            if (data.history) windowUserHistory = data.history;
+                            sessionStorage.setItem('dashboard_data', JSON.stringify({
+                                watchlist: windowUserWatchlist,
+                                favorites: windowUserFavorites,
+                                history: windowUserHistory
+                            }));
+                            refreshDashboard();
+                        }
                     }
-                    refreshDashboard();
                 } catch (e) {
                     console.error("Error fetching watchlist", e);
                 }
@@ -895,26 +924,40 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            updateCounts();
+            if (windowUserWatchlist.length > 0 || windowUserFavorites.length > 0) {
+                 refreshDashboard(true);
+            } else {
+                 updateCounts();
+            }
 
             const platformPills = document.querySelectorAll('#platformFilters .filter-pill');
             platformPills.forEach(pill => {
+                if (pill.dataset.platform === currentPlatformFilter) {
+                    platformPills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                }
                 pill.addEventListener('click', (e) => {
                     platformPills.forEach(p => p.classList.remove('active'));
                     const target = e.currentTarget;
                     target.classList.add('active');
                     currentPlatformFilter = target.dataset.platform;
+                    sessionStorage.setItem('dashboard_platform', currentPlatformFilter);
                     refreshDashboard();
                 });
             });
 
             const typePills = document.querySelectorAll('#typeFilters .filter-pill');
             typePills.forEach(pill => {
+                if (pill.dataset.type === currentTypeFilter) {
+                    typePills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                }
                 pill.addEventListener('click', (e) => {
                     typePills.forEach(p => p.classList.remove('active'));
                     const target = e.currentTarget;
                     target.classList.add('active');
                     currentTypeFilter = target.dataset.type;
+                    sessionStorage.setItem('dashboard_type', currentTypeFilter);
                     refreshDashboard();
                 });
             });
@@ -1194,12 +1237,14 @@
             if (currentTypeFilter !== 'All') {
                 filteredWatchlist = filteredWatchlist.filter(item => item.mediaType === currentTypeFilter);
             }
+            filteredWatchlist.sort((a, b) => b.id - a.id);
             filteredWatchlist.forEach(item => renderItem(item));
 
             let filteredFavorites = windowUserFavorites;
             if (currentTypeFilter !== 'All') {
                 filteredFavorites = filteredFavorites.filter(item => item.mediaType === currentTypeFilter);
             }
+            filteredFavorites.sort((a, b) => b.id - a.id);
             filteredFavorites.forEach(item => renderFavoriteItem(item));
 
             updateCounts();
